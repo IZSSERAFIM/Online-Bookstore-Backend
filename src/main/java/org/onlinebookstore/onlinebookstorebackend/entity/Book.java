@@ -11,14 +11,6 @@ public class Book {
     private Integer sales;
     private Integer stock;
 
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
     public Book(Integer id, String title, String author, String description, Integer price, String cover, Integer sales, Integer stock) {
         this.id = id;
         this.title = title;
@@ -29,6 +21,14 @@ public class Book {
         this.sales = sales;
         this.stock = stock;
     }
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
 
     public Integer getId() {
         return id;
