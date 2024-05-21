@@ -1,4 +1,4 @@
-package org.onlinebookstore.onlinebookstorebackend;
+package org.onlinebookstore.onlinebookstorebackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
