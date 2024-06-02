@@ -24,5 +24,17 @@ public class LoginController {
         }
         return loginService.checkAccount(user);
     }
+
+    @CrossOrigin
+    @RequestMapping("/logout")
+    public @ResponseBody boolean logoutHandler(@RequestBody UserDTO user){
+        HttpSession session = SessionUtils.getSession();
+        if (session != null && session.getAttribute("userId") != null) {
+            session.invalidate();
+            System.out.println("Session is invalidated");
+            return true;
+        }
+        return false;
+    }
 }
 
