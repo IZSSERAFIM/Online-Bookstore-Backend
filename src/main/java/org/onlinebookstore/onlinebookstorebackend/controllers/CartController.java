@@ -22,6 +22,7 @@ public class CartController {
     @CrossOrigin
     @RequestMapping("/cart")
     public ResponseEntity<List<CartItem>> getCartBooksHandler(@RequestBody UserDTO userDTO){
+        System.out.println("UserDTO: " + userDTO);
         return new ResponseEntity<>(cartService.getAllCartBooks(userDTO), HttpStatus.ACCEPTED);
     }
 
