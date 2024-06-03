@@ -26,12 +26,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getByName(String name){
+    public User getByName(String name) {
         return userRepository.findByName(name);
     }
 
     @Override
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public boolean isBanned(String name) {
+        User user = userRepository.findByName(name);
+        return user.getBanned();
     }
 }

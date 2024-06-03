@@ -14,10 +14,19 @@ public class LoginServiceImpl implements LoginService{
     UserDao userdao;
 
     @Override
-    public boolean checkAccount(UserDTO user){
+    public String checkAccount(UserDTO user){
         String input = user.getPassword();
         String password = userdao.getPasswordByName(user.getName());
+        boolean isBanned = userdao.isBanned(user.getName());
+
         System.out.println(input + "\n" + password);
-        return Objects.equals(input, password);
+
+        if (isBanned) {
+            return "BANNED";
+        } else if (Objects.equals(input, password)) {
+            return "SUCCESS";
+        } else {
+            return "WRONG_CREDENTIALS";
+        }
     }
 }

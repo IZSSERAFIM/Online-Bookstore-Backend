@@ -8,4 +8,5 @@ public interface UserDao {
     String getPasswordByName(String name);
     User getByName(String name);
     List<User> getAllUsers();
+    boolean isBanned(String name);
 }

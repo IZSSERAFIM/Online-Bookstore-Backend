@@ -43,4 +43,6 @@ public class User {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "banned")
+    private Boolean banned;
 }
