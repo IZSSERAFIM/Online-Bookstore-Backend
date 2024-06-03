@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -20,5 +21,11 @@ public class UserController {
     @RequestMapping("/user")
     public ResponseEntity<User> getUserProfileHandler(@RequestBody UserDTO userDTO){
         return new ResponseEntity<>(userService.getProfile(userDTO), HttpStatus.ACCEPTED);
+    }
+
+    @CrossOrigin
+    @RequestMapping("/admin_user")
+    public ResponseEntity<List<User>> getAllUsersHandler(){
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.ACCEPTED);
     }
 }

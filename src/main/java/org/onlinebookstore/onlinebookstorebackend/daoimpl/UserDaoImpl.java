@@ -8,6 +8,8 @@ import org.onlinebookstore.onlinebookstorebackend.repository.UserAuthRepository;
 import org.springframework.stereotype.Service;
 import jakarta.annotation.Resource;
 
+import java.util.List;
+
 @Service
 public class UserDaoImpl implements UserDao {
     @Resource
@@ -26,5 +28,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getByName(String name){
         return userRepository.findByName(name);
+    }
+
+    @Override
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
     }
 }
