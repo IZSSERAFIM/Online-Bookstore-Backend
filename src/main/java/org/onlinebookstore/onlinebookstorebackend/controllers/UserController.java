@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.alibaba.fastjson2.JSONObject;
 
 import java.util.List;
 
@@ -43,5 +44,20 @@ public class UserController {
         userService.unbanUser(userDTO);
         System.out.println("User has been unbanned");
         return new ResponseEntity<>("User has been unbanned", HttpStatus.ACCEPTED);
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/update_user", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> updateProfileHandler(@RequestBody UserDTO userDTO) {
+        String result = userService.updateProfile(userDTO);
+
+        JSONObject jsonResponse = new JSONObject();
+        jsonResponse.put("result", result);
+
+        if (result.equals("SUCCESS")) {
+            return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(jsonResponse, HttpStatus.BAD_REQUEST);
+        }
     }
 }

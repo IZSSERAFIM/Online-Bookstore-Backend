@@ -7,10 +7,8 @@ import java.util.List;
 
 public interface UserService {
     public User getProfile(UserDTO userDTO);
-
     public List<User> getAllUsers();
-
     void banUser(UserDTO userDTO);
-
     void unbanUser(UserDTO userDTO);
+    String updateProfile(UserDTO userDTO);
 }

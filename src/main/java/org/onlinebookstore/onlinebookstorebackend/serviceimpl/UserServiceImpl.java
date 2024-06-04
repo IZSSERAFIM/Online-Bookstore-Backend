@@ -48,4 +48,24 @@ public class UserServiceImpl implements UserService {
         user.setBanned(false);
         userRepository.save(user);
     }
+
+    @Override
+    public String updateProfile(UserDTO userDTO) {
+        if (userDTO.getName() == null) {
+            return "User name must not be null";
+        }
+
+        User user = userdao.getByName(userDTO.getName());
+        if (user == null) {
+            return "User not found";
+        }
+
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setPhone(userDTO.getPhone());
+        user.setAddress(userDTO.getAddress());
+        user.setDescription(userDTO.getDescription());
+        userRepository.save(user);
+        return "SUCCESS";
+    }
 }
