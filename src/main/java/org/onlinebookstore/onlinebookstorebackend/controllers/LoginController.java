@@ -48,4 +48,19 @@ public class LoginController {
         }
         return false;
     }
+
+    @CrossOrigin
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> registerHandler(@RequestBody UserDTO userDTO) {
+        String result = loginService.register(userDTO);
+
+        JSONObject jsonResponse = new JSONObject();
+        jsonResponse.put("result", result);
+
+        if (result.equals("SUCCESS")) {
+            return new ResponseEntity<>(jsonResponse, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(jsonResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

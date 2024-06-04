@@ -3,4 +3,5 @@ import org.onlinebookstore.onlinebookstorebackend.dto.UserDTO;
 
 public interface LoginService {
     public String checkAccount(UserDTO user);
+    public String register(UserDTO user);
 }
