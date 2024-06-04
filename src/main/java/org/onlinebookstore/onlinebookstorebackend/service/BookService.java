@@ -9,4 +9,5 @@ public interface BookService {
     public Book getBookById(Integer id);
     public Page<Book> getAllBooks(Pageable pageable);
     public Page<Book> searchBooks(String keyword, Pageable pageable);
+    public List<Book> getBestSellingBooks();
 }

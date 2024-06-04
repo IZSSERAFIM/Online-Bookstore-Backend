@@ -49,4 +49,15 @@ public class BookController {
         jsonResponse.put("total", page.getTotalPages());
         return new ResponseEntity<>(jsonResponse, HttpStatus.ACCEPTED);
     }
+
+    @CrossOrigin
+    @RequestMapping("/books/rank")
+    public ResponseEntity<JSONObject> getBestSellingBooksHandler() {
+        List<Book> books = bookService.getBestSellingBooks();
+
+        JSONObject jsonResponse = new JSONObject();
+        jsonResponse.put("books", books);
+
+        return new ResponseEntity<>(jsonResponse, HttpStatus.ACCEPTED);
+    }
 }

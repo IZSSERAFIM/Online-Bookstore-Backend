@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
     Page<Book> findByTitleContaining(String keyword, Pageable pageable);
+    List<Book> findTop5ByOrderBySalesDesc();
 }

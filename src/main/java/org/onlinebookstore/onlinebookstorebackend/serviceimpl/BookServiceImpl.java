@@ -39,4 +39,9 @@ public class BookServiceImpl implements BookService {
     public Page<Book> searchBooks(String keyword, Pageable pageable) {
         return bookRepository.findByTitleContaining(keyword, pageable);
     }
+
+    @Override
+    public List<Book> getBestSellingBooks() {
+        return bookRepository.findTop5ByOrderBySalesDesc();
+    }
 }
