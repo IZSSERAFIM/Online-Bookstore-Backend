@@ -45,6 +45,7 @@ public class LoginServiceImpl implements LoginService{
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setBanned(false); // Set banned to false for new users
+        user.setLevel(1);
         userRepository.save(user);
 
         UserAuth userAuth = new UserAuth();
