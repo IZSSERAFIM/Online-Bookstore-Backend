@@ -40,4 +40,9 @@ public class UserDaoImpl implements UserDao {
         User user = userRepository.findByName(name);
         return user.getBanned();
     }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
+    }
 }

@@ -9,4 +9,5 @@ public interface UserDao {
     User getByName(String name);
     List<User> getAllUsers();
     boolean isBanned(String name);
+    void save(User user);
 }
