@@ -7,6 +7,7 @@ import org.onlinebookstore.onlinebookstorebackend.dto.OrderDTO;
 import java.util.List;
 
 public interface OrderService {
-    public boolean addOrder(OrderDTO order);
+    public boolean addOrder(OrderDTO orderDto);
     public List<Order> getAllOrders(UserDTO userDTO);
+    public boolean checkStockAndAddOrder(OrderDTO orderDto);
 }

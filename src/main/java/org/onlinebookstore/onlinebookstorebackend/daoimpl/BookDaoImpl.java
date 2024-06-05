@@ -24,4 +24,9 @@ public class BookDaoImpl implements BookDao {
         Book book = bookRepository.findById(id).orElse(null);
         return book;
     }
+
+    @Override
+    public void save(Book book){
+        bookRepository.save(book);
+    }
 }

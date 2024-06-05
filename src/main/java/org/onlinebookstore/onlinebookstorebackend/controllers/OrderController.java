@@ -19,7 +19,7 @@ public class OrderController {
     @CrossOrigin
     @RequestMapping("/order/add")
     public boolean addOrderHandler(@RequestBody OrderDTO orderDTO){
-        return orderService.addOrder(orderDTO);
+        return orderService.checkStockAndAddOrder(orderDTO);
     }
 
     @CrossOrigin

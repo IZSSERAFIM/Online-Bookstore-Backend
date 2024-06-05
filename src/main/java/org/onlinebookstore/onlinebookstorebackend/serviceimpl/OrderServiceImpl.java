@@ -1,5 +1,6 @@
 package org.onlinebookstore.onlinebookstorebackend.serviceimpl;
 import org.onlinebookstore.onlinebookstorebackend.service.OrderService;
+import org.onlinebookstore.onlinebookstorebackend.entity.Book;
 import org.onlinebookstore.onlinebookstorebackend.dto.OrderDTO;
 import org.onlinebookstore.onlinebookstorebackend.dto.UserDTO;
 import org.onlinebookstore.onlinebookstorebackend.dao.OrderDao;
@@ -39,6 +40,24 @@ public class OrderServiceImpl implements OrderService {
             System.out.println(orderItemList.get(orderItemList.size() - 1));
         }
         orderdao.addOrder(new Order(null, orderDto.getDate(), orderItemList, userdao.getByName(orderDto.getName())));
+        return true;
+    }
+
+    @Override
+    public boolean checkStockAndAddOrder(OrderDTO orderDto){
+        for(int i = 0; i < orderDto.getBookIdList().size(); i ++){
+            Book book = bookdao.getBookById(orderDto.getBookIdList().get(i));
+            if(book.getStock() < orderDto.getBookNumList().get(i)){
+                return false;
+            }
+        }
+        addOrder(orderDto);
+        for(int i = 0; i < orderDto.getBookIdList().size(); i ++){
+            Book book = bookdao.getBookById(orderDto.getBookIdList().get(i));
+            book.setSales(book.getSales() + orderDto.getBookNumList().get(i));
+            book.setStock(book.getStock() - orderDto.getBookNumList().get(i));
+            bookdao.save(book);
+        }
         return true;
     }
 
