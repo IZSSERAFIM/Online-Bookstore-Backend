@@ -29,4 +29,9 @@ public class CartDaoImpl implements CartDao {
     public void addCartBook(CartItem cartItem){
         cartRepository.save(cartItem);
     }
+
+    @Override
+    public void deleteCart(Integer cartId){
+        cartRepository.deleteById(cartId);
+    }
 }

@@ -34,4 +34,14 @@ public class CartServiceImpl implements CartService {
     public List<CartItem> getAllCartBooks(UserDTO userDTO){
         return cartdao.getAllCartBooks(userDTO);
     }
+
+    @Override
+    public boolean deleteCart(Integer cartId) {
+        try {
+            cartdao.deleteCart(cartId);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

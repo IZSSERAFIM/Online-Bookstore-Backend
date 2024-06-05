@@ -31,4 +31,10 @@ public class CartController {
     public boolean addCartBookHandler(@RequestBody CartDTO cartBook){
         return cartService.addCartBook(cartBook);
     }
+
+    @CrossOrigin
+    @RequestMapping("/cart/delete")
+    public boolean deleteCartHandler(@RequestBody Integer cartId){
+        return cartService.deleteCart(cartId);
+    }
 }

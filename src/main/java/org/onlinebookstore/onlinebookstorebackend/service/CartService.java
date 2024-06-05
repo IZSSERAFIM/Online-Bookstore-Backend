@@ -9,4 +9,5 @@ import java.util.List;
 public interface CartService {
     public boolean addCartBook(CartDTO cartBook);
     public List<CartItem> getAllCartBooks(UserDTO userDTO);
+    public boolean deleteCart(Integer cartId);
 }
