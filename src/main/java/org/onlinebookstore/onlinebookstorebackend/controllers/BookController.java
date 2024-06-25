@@ -93,4 +93,10 @@ public class BookController {
         System.out.println("Book updated successfully");
         return new ResponseEntity<>("Book updated successfully", HttpStatus.OK);
     }
+
+    @CrossOrigin
+    @RequestMapping(value = "/books/delete", method = RequestMethod.POST)
+    public boolean deleteBookHandler(@RequestBody BookDTO book) {
+        return bookService.deleteBook(book.getId());
+    }
 }

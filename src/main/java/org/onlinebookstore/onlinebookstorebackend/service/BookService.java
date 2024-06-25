@@ -13,4 +13,5 @@ public interface BookService {
     public List<Book> getBestSellingBooks();
     public boolean addBook(BookDTO book);
     public boolean updateBook(Book book);
+    public boolean deleteBook(Integer id);
 }

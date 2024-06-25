@@ -14,9 +14,6 @@ public class FileUploadController {
     @Value("${upload.path}")
     private String uploadPath;
 
-    @Autowired
-    BookRepository bookRepository;
-
     @CrossOrigin
     @RequestMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -25,8 +22,8 @@ public class FileUploadController {
         }
 
         try {
-            Integer maxId = bookRepository.findTopByOrderByIdDesc().getId() + 1;
-            String fileName = "book" + maxId + ".jpg";
+            // Save the file with a temporary name
+            String fileName = "temp.jpg";
             File dest = new File(uploadPath + fileName);
             file.transferTo(dest);
             return new ResponseEntity<>("File uploaded successfully: " + fileName, HttpStatus.OK);
