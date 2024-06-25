@@ -36,4 +36,10 @@ public class OrderDaoImpl implements OrderDao {
         List<Order> orderList = orderRepository.findByUser(user);
         return orderList;
     }
+
+    @Override
+    public List<Order> getAllOrders(){
+        List<Order> orderList = orderRepository.findAll();
+        return orderList;
+    }
 }

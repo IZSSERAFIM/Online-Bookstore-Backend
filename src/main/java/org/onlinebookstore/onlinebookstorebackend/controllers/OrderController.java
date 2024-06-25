@@ -27,4 +27,10 @@ public class OrderController {
     public List<Order> getAllOrdersHandler(@RequestBody UserDTO userDTO){
         return orderService.getAllOrders(userDTO);
     }
+
+    @CrossOrigin
+    @RequestMapping("/admin_order")
+    public List<Order> getAllOrdersHandler(){
+        return orderService.getAllOrders();
+    }
 }

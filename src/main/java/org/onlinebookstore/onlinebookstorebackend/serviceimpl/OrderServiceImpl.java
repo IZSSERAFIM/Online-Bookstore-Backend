@@ -1,4 +1,5 @@
 package org.onlinebookstore.onlinebookstorebackend.serviceimpl;
+
 import org.onlinebookstore.onlinebookstorebackend.service.OrderService;
 import org.onlinebookstore.onlinebookstorebackend.entity.Book;
 import org.onlinebookstore.onlinebookstorebackend.entity.User;
@@ -31,9 +32,9 @@ public class OrderServiceImpl implements OrderService {
     LoginService loginService;
 
     @Override
-    public boolean addOrder(OrderDTO orderDto){
+    public boolean addOrder(OrderDTO orderDto) {
         List<OrderItem> orderItemList = new ArrayList<>();
-        for(int i = 0; i < orderDto.getBookIdList().size(); i ++){
+        for (int i = 0; i < orderDto.getBookIdList().size(); i++) {
             orderItemList.add(new OrderItem(null,
                     bookdao.getBookById(orderDto.getBookIdList().get(i)),
                     null,
@@ -45,31 +46,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-public boolean checkStockAndAddOrder(OrderDTO orderDto){
-    for(int i = 0; i < orderDto.getBookIdList().size(); i ++){
-        Book book = bookdao.getBookById(orderDto.getBookIdList().get(i));
-        if(book.getStock() < orderDto.getBookNumList().get(i)){
-            return false;
+    public boolean checkStockAndAddOrder(OrderDTO orderDto) {
+        for (int i = 0; i < orderDto.getBookIdList().size(); i++) {
+            Book book = bookdao.getBookById(orderDto.getBookIdList().get(i));
+            if (book.getStock() < orderDto.getBookNumList().get(i)) {
+                return false;
+            }
         }
-    }
-    addOrder(orderDto);
-    for(int i = 0; i < orderDto.getBookIdList().size(); i ++){
-        Book book = bookdao.getBookById(orderDto.getBookIdList().get(i));
-        book.setSales(book.getSales() + orderDto.getBookNumList().get(i));
-        book.setStock(book.getStock() - orderDto.getBookNumList().get(i));
-        bookdao.save(book);
-    }
+        addOrder(orderDto);
+        for (int i = 0; i < orderDto.getBookIdList().size(); i++) {
+            Book book = bookdao.getBookById(orderDto.getBookIdList().get(i));
+            book.setSales(book.getSales() + orderDto.getBookNumList().get(i));
+            book.setStock(book.getStock() - orderDto.getBookNumList().get(i));
+            bookdao.save(book);
+        }
 
-    // Get the user and increase their level
-    User user = userdao.getByName(orderDto.getName());
-    user.setLevel(user.getLevel() + 1);
-    userdao.save(user);
+        // Get the user and increase their level
+        User user = userdao.getByName(orderDto.getName());
+        user.setLevel(user.getLevel() + 1);
+        userdao.save(user);
 
-    return true;
-}
+        return true;
+    }
 
     @Override
-    public List<Order> getAllOrders(UserDTO userDTO){
+    public List<Order> getAllOrders(UserDTO userDTO) {
         return orderdao.getAllOrders(userDTO);
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderdao.getAllOrders();
     }
 }

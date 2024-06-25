@@ -10,4 +10,5 @@ public interface OrderService {
     public boolean addOrder(OrderDTO orderDto);
     public List<Order> getAllOrders(UserDTO userDTO);
     public boolean checkStockAndAddOrder(OrderDTO orderDto);
+    public List<Order> getAllOrders();
 }
