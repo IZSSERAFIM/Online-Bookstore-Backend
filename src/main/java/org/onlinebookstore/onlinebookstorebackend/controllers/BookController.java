@@ -1,5 +1,6 @@
 package org.onlinebookstore.onlinebookstorebackend.controllers;
 
+import org.onlinebookstore.onlinebookstorebackend.dto.BookDTO;
 import org.onlinebookstore.onlinebookstorebackend.entity.Book;
 import org.onlinebookstore.onlinebookstorebackend.service.BookService;
 import org.springframework.beans.factory.annotation.*;
@@ -59,5 +60,11 @@ public class BookController {
         jsonResponse.put("books", books);
 
         return new ResponseEntity<>(jsonResponse, HttpStatus.ACCEPTED);
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/books/add", method = RequestMethod.POST)
+    public boolean addBookHandler(@RequestBody BookDTO book) {
+        return bookService.addBook(book);
     }
 }

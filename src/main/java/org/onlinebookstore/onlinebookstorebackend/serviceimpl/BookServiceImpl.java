@@ -1,5 +1,6 @@
 package org.onlinebookstore.onlinebookstorebackend.serviceimpl;
 
+import org.onlinebookstore.onlinebookstorebackend.dto.BookDTO;
 import org.onlinebookstore.onlinebookstorebackend.repository.BookRepository;
 import org.onlinebookstore.onlinebookstorebackend.service.BookService;
 import org.onlinebookstore.onlinebookstorebackend.entity.Book;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,5 +45,23 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getBestSellingBooks() {
         return bookRepository.findTop5ByOrderBySalesDesc();
+    }
+
+    @Override
+    public boolean addBook(BookDTO book) {
+        Integer maxId = bookRepository.findTopByOrderByIdDesc().getId() + 1;
+        Book newBook = new Book(
+                null,
+                book.getTitle(),
+                book.getAuthor(),
+                book.getDescription(),
+                book.getPrice()*100,
+                "/book"+maxId+".jpg",
+                0,
+                15,
+                new ArrayList<>() // Initialize CartItems as an empty list
+        );
+        bookdao.addBook(newBook);
+        return true;
     }
 }

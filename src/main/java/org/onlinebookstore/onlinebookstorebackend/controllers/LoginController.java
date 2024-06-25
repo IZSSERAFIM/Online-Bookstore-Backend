@@ -30,7 +30,9 @@ public class LoginController {
         if (result.equals("SUCCESS")) {
             if (session != null) {
                 session.setAttribute("userId", user);
+                System.out.println(session);
             }
+//            System.out.println(session);
             return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);

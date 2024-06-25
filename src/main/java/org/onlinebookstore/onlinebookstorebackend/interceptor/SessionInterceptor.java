@@ -11,15 +11,21 @@ public class SessionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            System.out.println("OPTIONS is invoked");
             return true;
         }
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("userId") != null) {
-            System.out.println("Session is already logged in");
+        String requestURI = request.getRequestURI();
+
+        System.out.println(session.getAttribute("userId"));
+        // Allow anonymous access to specific paths
+        if (requestURI.equals("/login") || requestURI.equals("/register")) {
             return true;
         }
-        System.out.println("Session is not logged in yet");
+
+        if (session != null && session.getAttribute("userId") != null) {
+            return true;
+        }
+
         response.setStatus(401);
         return false;
     }
