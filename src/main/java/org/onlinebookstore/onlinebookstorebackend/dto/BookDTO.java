@@ -10,4 +10,6 @@ public class BookDTO {
     private String description;
     private Integer price;
     private String cover;
+    private Integer id;
+    private Integer stock;
 }

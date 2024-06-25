@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.alibaba.fastjson2.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -66,5 +67,30 @@ public class BookController {
     @RequestMapping(value = "/books/add", method = RequestMethod.POST)
     public boolean addBookHandler(@RequestBody BookDTO book) {
         return bookService.addBook(book);
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/books/update", method = RequestMethod.POST)
+    public ResponseEntity<?> updateBookHandler(@RequestBody Map<String, BookDTO> payload) {
+        BookDTO bookid_stock = payload.get("bookid_stock");
+        if (bookid_stock == null) {
+            System.out.println("Invalid request body");
+            return new ResponseEntity<>("Invalid request body", HttpStatus.BAD_REQUEST);
+        }
+        Integer id = bookid_stock.getId();
+        Integer stock = bookid_stock.getStock();
+        if (id == null || stock == null) {
+            System.out.println("Invalid id or stock");
+            return new ResponseEntity<>("Invalid id or stock", HttpStatus.BAD_REQUEST);
+        }
+        Book book = bookService.getBookById(id);
+        if (book == null) {
+            System.out.println("Book not found");
+            return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
+        }
+        book.setStock(stock);
+        bookService.updateBook(book);
+        System.out.println("Book updated successfully");
+        return new ResponseEntity<>("Book updated successfully", HttpStatus.OK);
     }
 }

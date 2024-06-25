@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,13 +56,31 @@ public class BookServiceImpl implements BookService {
                 book.getTitle(),
                 book.getAuthor(),
                 book.getDescription(),
-                book.getPrice()*100,
-                "/book"+maxId+".jpg",
+                book.getPrice() * 100,
+                "/book" + maxId + ".jpg",
                 0,
                 15,
                 new ArrayList<>() // Initialize CartItems as an empty list
         );
         bookdao.addBook(newBook);
+        return true;
+    }
+
+    @Override
+    public boolean updateBook(Book book) {
+        Optional<Book> existingBookOptional = bookRepository.findById(book.getId());
+        if (!existingBookOptional.isPresent()) {
+            return false;
+        }
+        Book existingBook = existingBookOptional.get();
+        existingBook.setTitle(book.getTitle());
+        existingBook.setAuthor(book.getAuthor());
+        existingBook.setDescription(book.getDescription());
+        existingBook.setPrice(book.getPrice());
+        existingBook.setCover(book.getCover());
+        existingBook.setSales(book.getSales());
+        existingBook.setStock(book.getStock());
+        bookRepository.save(existingBook);
         return true;
     }
 }
