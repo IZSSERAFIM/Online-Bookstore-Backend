@@ -7,8 +7,10 @@ import org.onlinebookstore.onlinebookstorebackend.service.UserService;
 import org.onlinebookstore.onlinebookstorebackend.service.LoginService;
 import org.onlinebookstore.onlinebookstorebackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -49,6 +51,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Value("${upload.path}")
+    private String uploadPath;
+
     @Override
     public String updateProfile(UserDTO userDTO) {
         if (userDTO.getName() == null) {
@@ -65,7 +70,18 @@ public class UserServiceImpl implements UserService {
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
         user.setDescription(userDTO.getDescription());
+        User savedUser = userRepository.findById(user.getId()).orElse(null);
+        String newAvatarName = "/avatar" + savedUser.getId() + ".jpg";
+        savedUser.setAvatar(newAvatarName);
         userRepository.save(user);
+        // Rename the uploaded file
+        File oldFile = new File(uploadPath + "temp.jpg");
+        File newFile = new File(uploadPath + newAvatarName);
+        if (oldFile.renameTo(newFile)) {
+            System.out.println("File renamed successfully");
+        } else {
+            System.out.println("Failed to rename file");
+        }
         return "SUCCESS";
     }
 }
