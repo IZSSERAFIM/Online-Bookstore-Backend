@@ -52,36 +52,37 @@ public class BookServiceImpl implements BookService {
 
     @Value("${upload.path}")
     private String uploadPath;
+
     @Override
-public boolean addBook(BookDTO book) {
-    Book newBook = new Book(
-            null,
-            book.getTitle(),
-            book.getAuthor(),
-            book.getDescription(),
-            book.getPrice() * 100,
-            "temp.jpg", // Set the cover to a temporary value
-            0,
-            15,
-            new ArrayList<>() // Initialize CartItems as an empty list
-    );
+    public boolean addBook(BookDTO book) {
+        Book newBook = new Book(
+                null,
+                book.getTitle(),
+                book.getAuthor(),
+                book.getDescription(),
+                book.getPrice() * 100,
+                "temp.jpg", // Set the cover to a temporary value
+                0,
+                15,
+                new ArrayList<>() // Initialize CartItems as an empty list
+        );
         bookdao.addBook(newBook);
-    Book savedBook = bookRepository.findByTitle(book.getTitle()); // Save the book and get the saved instance
-    String newCoverName = "/book" + savedBook.getId() + ".jpg";
-    savedBook.setCover(newCoverName); // Update the cover with the correct ID
-    bookRepository.save(savedBook); // Save the book again with the updated cover
+        Book savedBook = bookRepository.findByTitle(book.getTitle()); // Save the book and get the saved instance
+        String newCoverName = "/book" + savedBook.getId() + ".jpg";
+        savedBook.setCover(newCoverName); // Update the cover with the correct ID
+        bookRepository.save(savedBook); // Save the book again with the updated cover
 
-    // Rename the uploaded file
-    File oldFile = new File(uploadPath + "temp.jpg");
-    File newFile = new File(uploadPath + newCoverName);
-    if (oldFile.renameTo(newFile)) {
-        System.out.println("File renamed successfully");
-    } else {
-        System.out.println("Failed to rename file");
+        // Rename the uploaded file
+        File oldFile = new File(uploadPath + "temp.jpg");
+        File newFile = new File(uploadPath + newCoverName);
+        if (oldFile.renameTo(newFile)) {
+            System.out.println("File renamed successfully");
+        } else {
+            System.out.println("Failed to rename file");
+        }
+
+        return true;
     }
-
-    return true;
-}
 
     @Override
     public boolean updateBook(Book book) {
