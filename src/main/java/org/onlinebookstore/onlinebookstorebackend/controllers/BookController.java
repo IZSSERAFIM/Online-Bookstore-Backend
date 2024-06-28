@@ -1,5 +1,6 @@
 package org.onlinebookstore.onlinebookstorebackend.controllers;
 
+import com.alibaba.fastjson2.JSON;
 import org.onlinebookstore.onlinebookstorebackend.dto.BookDTO;
 import org.onlinebookstore.onlinebookstorebackend.entity.Book;
 import org.onlinebookstore.onlinebookstorebackend.service.BookService;
@@ -71,27 +72,20 @@ public class BookController {
 
     @CrossOrigin
     @RequestMapping(value = "/books/update", method = RequestMethod.POST)
-    public ResponseEntity<?> updateBookHandler(@RequestBody Map<String, BookDTO> payload) {
-        BookDTO bookid_stock = payload.get("bookid_stock");
-        if (bookid_stock == null) {
-            System.out.println("Invalid request body");
+    public ResponseEntity<?> updateBookHandler(@RequestBody String payload) {
+        // 解析传入的 JSON 字符串为 JSONObject
+        JSONObject jsonObject = JSON.parseObject(payload);
+
+        // 从 JSONObject 中提取 BookDTO 对象
+        BookDTO updatedBook = jsonObject.getObject("updatedBook", BookDTO.class);
+        if (updatedBook == null) {
             return new ResponseEntity<>("Invalid request body", HttpStatus.BAD_REQUEST);
         }
-        Integer id = bookid_stock.getId();
-        Integer stock = bookid_stock.getStock();
-        if (id == null || stock == null) {
-            System.out.println("Invalid id or stock");
-            return new ResponseEntity<>("Invalid id or stock", HttpStatus.BAD_REQUEST);
+        if (bookService.updateBook(updatedBook)) {
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Book book = bookService.getBookById(id);
-        if (book == null) {
-            System.out.println("Book not found");
-            return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
-        }
-        book.setStock(stock);
-        bookService.updateBook(book);
-        System.out.println("Book updated successfully");
-        return new ResponseEntity<>("Book updated successfully", HttpStatus.OK);
     }
 
     @CrossOrigin

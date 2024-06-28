@@ -12,6 +12,6 @@ public interface BookService {
     public Page<Book> searchBooks(String keyword, Pageable pageable);
     public List<Book> getBestSellingBooks();
     public boolean addBook(BookDTO book);
-    public boolean updateBook(Book book);
+    public boolean updateBook(BookDTO book);
     public boolean deleteBook(Integer id);
 }
