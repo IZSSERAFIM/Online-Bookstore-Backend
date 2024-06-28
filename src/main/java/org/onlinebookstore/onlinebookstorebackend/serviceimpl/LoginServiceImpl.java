@@ -27,9 +27,6 @@ public class LoginServiceImpl implements LoginService{
         String input = user.getPassword();
         String password = userdao.getPasswordByName(user.getName());
         boolean isBanned = userdao.isBanned(user.getName());
-
-        System.out.println(input + "\n" + password);
-
         if (isBanned) {
             return "BANNED";
         } else if (Objects.equals(input, password)) {
