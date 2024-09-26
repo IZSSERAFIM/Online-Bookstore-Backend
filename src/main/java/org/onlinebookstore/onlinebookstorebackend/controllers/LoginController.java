@@ -1,9 +1,11 @@
 package org.onlinebookstore.onlinebookstorebackend.controllers;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.onlinebookstore.onlinebookstorebackend.dto.UserDTO;
 import org.onlinebookstore.onlinebookstorebackend.service.LoginService;
+import org.onlinebookstore.onlinebookstorebackend.service.TimerService;
 import org.onlinebookstore.onlinebookstorebackend.utils.SessionUtils;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import com.alibaba.fastjson2.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
+@Scope("session")
 public class LoginController {
 
     @Autowired
     LoginService loginService;
+
+    @Autowired
+    TimerService timerService;
 
     @CrossOrigin
     @RequestMapping("/login")
@@ -31,8 +40,8 @@ public class LoginController {
             if (session != null) {
                 session.setAttribute("userId", user);
                 System.out.println(session);
+                timerService.startTimer();
             }
-//            System.out.println(session);
             return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);
@@ -41,14 +50,20 @@ public class LoginController {
 
     @CrossOrigin
     @RequestMapping("/logout")
-    public @ResponseBody boolean logoutHandler(@RequestBody UserDTO user) {
+    public @ResponseBody Map<String, Object> logoutHandler(@RequestBody UserDTO user) {
         HttpSession session = SessionUtils.getSession();
+        Map<String, Object> response = new HashMap<>();
         if (session != null && session.getAttribute("userId") != null) {
             session.invalidate();
             System.out.println("Session is invalidated");
-            return true;
+            long timeElapsed = timerService.stopTimer();
+            System.out.println("Time elapsed: " + timeElapsed + "ms");
+            response.put("timeElapsed", timeElapsed);
+            response.put("message", "Session invalidated successfully");
+        } else {
+            response.put("message", "Session is already invalidated");
         }
-        return false;
+        return response;
     }
 
     @CrossOrigin
