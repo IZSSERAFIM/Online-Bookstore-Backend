@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.List;
 
@@ -16,10 +17,17 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
     @CrossOrigin
     @RequestMapping("/order/add")
     public boolean addOrderHandler(@RequestBody OrderDTO orderDTO){
-        return orderService.checkStockAndAddOrder(orderDTO);
+//        return orderService.checkStockAndAddOrder(orderDTO);
+        String data = orderDTO.getDate() + "," + orderDTO.getName() + "," + orderDTO.getBookIdList() + "," + orderDTO.getBookNumList();
+        kafkaTemplate.send("order", "key", data);
+        System.out.println("Sent message: " + data);
+        return true;
     }
 
     @CrossOrigin
