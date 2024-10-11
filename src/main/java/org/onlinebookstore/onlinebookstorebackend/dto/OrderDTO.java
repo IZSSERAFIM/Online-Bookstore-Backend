@@ -22,12 +22,13 @@ public class OrderDTO {
         this.name = name_prop;
         this.bookIdList = List.of(bookIdList_prop.replaceAll("\\[|\\]", "").split(","))
                 .stream()
+                .map(String::trim)  // 添加 trim()
                 .map(Integer::parseInt)
                 .toList();
         this.bookNumList = List.of(bookNumList_prop.replaceAll("\\[|\\]", "").split(","))
                 .stream()
+                .map(String::trim)  // 添加 trim()
                 .map(Integer::parseInt)
                 .toList();
     }
-
 }
