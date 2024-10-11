@@ -1,5 +1,6 @@
 package org.onlinebookstore.onlinebookstorebackend.serviceimpl;
 
+import org.onlinebookstore.onlinebookstorebackend.dao.OrderItemDao;
 import org.onlinebookstore.onlinebookstorebackend.service.OrderService;
 import org.onlinebookstore.onlinebookstorebackend.entity.Book;
 import org.onlinebookstore.onlinebookstorebackend.entity.User;
@@ -13,6 +14,7 @@ import org.onlinebookstore.onlinebookstorebackend.entity.OrderItem;
 import org.onlinebookstore.onlinebookstorebackend.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +32,11 @@ public class OrderServiceImpl implements OrderService {
     UserDao userdao;
     @Autowired
     LoginService loginService;
+    @Autowired
+    OrderItemDao orderItemDao;
 
     @Override
+    @Transactional
     public boolean addOrder(OrderDTO orderDto) {
         List<OrderItem> orderItemList = new ArrayList<>();
         for (int i = 0; i < orderDto.getBookIdList().size(); i++) {
@@ -41,7 +46,14 @@ public class OrderServiceImpl implements OrderService {
                     orderDto.getBookNumList().get(i)));
             System.out.println(orderItemList.get(orderItemList.size() - 1));
         }
-        orderdao.addOrder(new Order(null, orderDto.getDate(), orderItemList, userdao.getByName(orderDto.getName())));
+//        orderdao.addOrder(new Order(null, orderDto.getDate(), orderItemList, userdao.getByName(orderDto.getName())));
+        Order order = new Order(null, orderDto.getDate(), orderItemList, userdao.getByName(orderDto.getName()));
+        orderdao.addOrder(order);
+//        int result = 1 / 0;
+        for (OrderItem orderItem : orderItemList) {
+            orderItem.setOrder(order);
+        }
+        orderItemDao.addOrderItems(orderItemList);
         return true;
     }
 
