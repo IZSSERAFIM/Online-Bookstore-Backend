@@ -5,6 +5,7 @@ import org.onlinebookstore.onlinebookstorebackend.entity.OrderItem;
 import org.onlinebookstore.onlinebookstorebackend.repository.OrderItemRepository;
 import org.springframework.stereotype.Service;
 import jakarta.annotation.Resource;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -15,7 +16,8 @@ public class OrderItemDaoImpl implements OrderItemDao {
     private OrderItemRepository orderItemRepository;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addOrderItems(List<OrderItem> orderItems) {
         orderItemRepository.saveAll(orderItems);
 //        int result = 1 / 0;

@@ -10,6 +10,7 @@ import org.onlinebookstore.onlinebookstorebackend.repository.OrderRepository;
 import org.onlinebookstore.onlinebookstorebackend.repository.OrderItemRepository;
 import org.springframework.stereotype.Service;
 import jakarta.annotation.Resource;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -24,7 +25,8 @@ public class OrderDaoImpl implements OrderDao {
     private UserDao userDao;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
+//  @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addOrder(Order order) {
 //        Order savedOrder = orderRepository.save(order);
 //        for(OrderItem orderItem : order.getOrderItemList())
