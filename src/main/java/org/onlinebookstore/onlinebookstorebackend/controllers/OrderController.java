@@ -23,7 +23,6 @@ public class OrderController {
     @CrossOrigin
     @RequestMapping("/order/add")
     public boolean addOrderHandler(@RequestBody OrderDTO orderDTO){
-//        return orderService.checkStockAndAddOrder(orderDTO);
         String data = orderDTO.getDate() + "," + orderDTO.getName() + "," + orderDTO.getBookIdList() + "," + orderDTO.getBookNumList();
         kafkaTemplate.send("order", "key", data);
         System.out.println("Sent message: " + data);

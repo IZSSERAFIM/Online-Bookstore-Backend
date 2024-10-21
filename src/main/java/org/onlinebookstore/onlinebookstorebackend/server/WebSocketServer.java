@@ -13,23 +13,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 @ServerEndpoint(value = "/websocket/{userId}")
 public class WebSocketServer {
     private static AtomicInteger onlineCount = new AtomicInteger(0);
-    private static ConcurrentHashMap<String, WebSocketServer> webSocketMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, WebSocketServer> webSocketSession = new ConcurrentHashMap<>();
     private Session session;
     private String userId;
 
     @OnOpen
     public void onOpen(Session session, @PathParam("userId") String userId) {
+        if (webSocketSession.containsKey(userId)) {
+            System.out.println("User already online: " + userId);
+            return;
+        }
         this.session = session;
         this.userId = userId;
-        webSocketMap.put(userId, this);
+        webSocketSession.put(userId, this);
         addOnlineCount();
         System.out.println("New connection: " + userId + ", current online count: " + getOnlineCount());
     }
 
     @OnClose
     public void onClose() {
-        if (webSocketMap.containsKey(userId)) {
-            webSocketMap.remove(userId);
+        if (webSocketSession.containsKey(userId)) {
+            webSocketSession.remove(userId);
             subOnlineCount();
             System.out.println("Connection closed: " + userId + ", current online count: " + getOnlineCount());
         }
@@ -50,19 +54,19 @@ public class WebSocketServer {
     }
 
     public void sendMessageToUser(String user, String message) throws IOException {
-        for (String key : webSocketMap.keySet()) {
+        for (String key : webSocketSession.keySet()) {
             if (key.equals(user)) {
-                webSocketMap.get(key).sendMessage(message);
+                webSocketSession.get(key).sendMessage(message);
             }
         }
     }
 
     public static void sendInfo(String message, @PathParam("userId") String userId) throws IOException {
         if (userId != null) {
-            webSocketMap.get(userId).sendMessage(message);
+            webSocketSession.get(userId).sendMessage(message);
         } else {
-            for (String key : webSocketMap.keySet()) {
-                webSocketMap.get(key).sendMessage(message);
+            for (String key : webSocketSession.keySet()) {
+                webSocketSession.get(key).sendMessage(message);
             }
         }
     }

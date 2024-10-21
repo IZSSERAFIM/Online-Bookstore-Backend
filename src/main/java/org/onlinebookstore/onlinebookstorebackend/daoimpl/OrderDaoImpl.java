@@ -26,14 +26,8 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-//  @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addOrder(Order order) {
-//        Order savedOrder = orderRepository.save(order);
-//        for(OrderItem orderItem : order.getOrderItemList())
-//            orderItem.setOrder(savedOrder);
-//        orderItemRepository.saveAll(order.getOrderItemList());
         orderRepository.save(order);
-//        int result = 1 / 0;
     }
 
     @Override

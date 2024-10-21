@@ -17,9 +17,7 @@ public class OrderItemDaoImpl implements OrderItemDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-//    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addOrderItems(List<OrderItem> orderItems) {
         orderItemRepository.saveAll(orderItems);
-//        int result = 1 / 0;
     }
 }

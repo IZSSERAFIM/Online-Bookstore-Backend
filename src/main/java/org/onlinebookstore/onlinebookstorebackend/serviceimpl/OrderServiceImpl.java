@@ -46,10 +46,8 @@ public class OrderServiceImpl implements OrderService {
                     orderDto.getBookNumList().get(i)));
             System.out.println(orderItemList.get(orderItemList.size() - 1));
         }
-//        orderdao.addOrder(new Order(null, orderDto.getDate(), orderItemList, userdao.getByName(orderDto.getName())));
         Order order = new Order(null, orderDto.getDate(), orderItemList, userdao.getByName(orderDto.getName()));
         orderdao.addOrder(order);
-//        int result = 1 / 0;
         for (OrderItem orderItem : orderItemList) {
             orderItem.setOrder(order);
         }
