@@ -13,8 +13,13 @@ import org.onlinebookstore.onlinebookstorebackend.entity.Order;
 import org.onlinebookstore.onlinebookstorebackend.entity.OrderItem;
 import org.onlinebookstore.onlinebookstorebackend.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +27,6 @@ import java.util.List;
 import static com.fasterxml.jackson.databind.cfg.CoercionInputShape.Array;
 
 @Service
-
 public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderDao orderdao;
@@ -34,9 +38,11 @@ public class OrderServiceImpl implements OrderService {
     LoginService loginService;
     @Autowired
     OrderItemDao orderItemDao;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public boolean addOrder(OrderDTO orderDto) {
         List<OrderItem> orderItemList = new ArrayList<>();
         for (int i = 0; i < orderDto.getBookIdList().size(); i++) {
@@ -52,6 +58,7 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setOrder(order);
         }
         orderItemDao.addOrderItems(orderItemList);
+//        redisTemplate.opsForValue().set("order::" + orderDto.getName(), orderdao.getAllOrders(new UserDTO(orderDto.getName())));
         return true;
     }
 
@@ -80,11 +87,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+//    @Cacheable(value = "order", key = "#userDTO.name")
     public List<Order> getAllOrders(UserDTO userDTO) {
         return orderdao.getAllOrders(userDTO);
     }
 
     @Override
+//    @Cacheable(value = "allOrders")
     public List<Order> getAllOrders() {
         return orderdao.getAllOrders();
     }

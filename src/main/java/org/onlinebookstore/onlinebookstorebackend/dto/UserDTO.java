@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.data.relational.core.sql.In;
 
 @Data
+@AllArgsConstructor
 public class UserDTO {
     private String name;
     private String password;
@@ -12,4 +13,8 @@ public class UserDTO {
     private String address;
     private String phone;
     private String description;
+
+    public UserDTO(String name) {
+        this.name = name;
+    }
 }

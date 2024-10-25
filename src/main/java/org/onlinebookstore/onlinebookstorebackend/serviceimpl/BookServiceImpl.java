@@ -7,6 +7,7 @@ import org.onlinebookstore.onlinebookstorebackend.entity.Book;
 import org.onlinebookstore.onlinebookstorebackend.dao.BookDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -17,6 +18,10 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+
 @Service
 public class BookServiceImpl implements BookService {
     @Autowired
@@ -25,12 +30,17 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
+    @Cacheable(value = "books")
     public List<Book> getAllBooks() {
         return bookdao.getAllBooks();
     }
 
     @Override
+    @Cacheable(value = "book", key = "#id")
     public Book getBookById(Integer id) {
         return bookdao.getBookById(id);
     }
@@ -46,6 +56,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Cacheable(value = "bestSellingBooks")
     public List<Book> getBestSellingBooks() {
         return bookRepository.findTop5ByOrderBySalesDesc();
     }
@@ -68,8 +79,8 @@ public class BookServiceImpl implements BookService {
         );
         bookdao.addBook(newBook);
         Book savedBook = bookRepository.findByTitle(book.getTitle()); // Save the book and get the saved instance
-        String newCoverName = "/book" + savedBook.getId() + ".jpg";
-        savedBook.setCover(newCoverName); // Update the cover with the correct ID
+        String newCoverName = "book" + savedBook.getId() + ".jpg";
+        savedBook.setCover("http://localhost:8080/images/" + newCoverName); // Update the cover with the correct ID
         bookRepository.save(savedBook); // Save the book again with the updated cover
 
         // Rename the uploaded file
@@ -80,6 +91,9 @@ public class BookServiceImpl implements BookService {
         } else {
             System.out.println("Failed to rename file");
         }
+
+        // Cache the updated book
+        redisTemplate.opsForValue().set("book::" + book.getId(), savedBook);
 
         return true;
     }
@@ -95,13 +109,12 @@ public class BookServiceImpl implements BookService {
         existingBook.setAuthor(book.getAuthor());
         existingBook.setDescription(book.getDescription());
         existingBook.setPrice(book.getPrice());
-//        existingBook.setCover(book.getCover());
         existingBook.setStock(book.getStock());
-        String coverName = "/book" + existingBook.getId() + ".jpg";
+        String coverName = "book" + existingBook.getId() + ".jpg";
         File tempFile = new File(uploadPath + "temp.jpg");
         File oldFile = new File(uploadPath + coverName);
         // Check if the old file exists before attempting to delete it
-        if (tempFile.exists()){
+        if (tempFile.exists()) {
             if (oldFile.exists()) {
                 if (oldFile.delete()) {
                     System.out.println("Old file deleted successfully: " + oldFile.getPath());
@@ -121,14 +134,18 @@ public class BookServiceImpl implements BookService {
                 return false;
             }
         }
-        existingBook.setCover(coverName);
+        existingBook.setCover("http://localhost:8080/images/" + coverName);
         // Save the updated book details
         bookRepository.save(existingBook);
+
+        // Cache the updated book
+        redisTemplate.opsForValue().set("book::" + book.getId(), existingBook);
+
         return true;
     }
 
-
     @Override
+    @CacheEvict(value = "book", key = "#id")
     public boolean deleteBook(Integer id) {
         Optional<Book> existingBookOptional = bookRepository.findById(id);
         if (!existingBookOptional.isPresent()) {

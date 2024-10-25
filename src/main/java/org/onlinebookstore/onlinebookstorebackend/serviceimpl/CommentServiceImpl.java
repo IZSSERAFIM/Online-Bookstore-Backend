@@ -7,6 +7,9 @@ import org.onlinebookstore.onlinebookstorebackend.dao.CommentDao;
 import org.onlinebookstore.onlinebookstorebackend.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 
 import java.util.List;
 
@@ -18,11 +21,13 @@ public class CommentServiceImpl implements CommentService {
     UserDao userdao;
 
     @Override
+    @Cacheable(value = "comments")
     public List<Comment> getCommentsByBookId(Integer id) {
         return commentdao.getCommentsByBookId(id);
     }
 
     @Override
+    @CachePut(value = "comment", key = "#commentDto.username")
     public boolean postComment(CommentDTO commentDto) {
         System.out.println(commentDto.getUsername());
         Comment comment = new Comment(null,
