@@ -7,6 +7,7 @@ import org.onlinebookstore.onlinebookstorebackend.entity.Book;
 import org.onlinebookstore.onlinebookstorebackend.dao.BookDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class BookServiceImpl implements BookService {
     @Autowired
@@ -33,6 +37,8 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
+
     @Override
     @Cacheable(value = "books")
     public List<Book> getAllBooks() {
@@ -40,9 +46,41 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Cacheable(value = "book", key = "#id")
+//    @Cacheable(value = "book", key = "#id")
     public Book getBookById(Integer id) {
-        return bookdao.getBookById(id);
+//        return bookdao.getBookById(id);
+        logger.info("Fetching book with ID: {}", id);
+
+        Book book = null;
+        long startTime = System.currentTimeMillis();
+
+        try {
+            book = (Book) redisTemplate.opsForValue().get("book::" + id);
+            if (book != null) {
+                long endTime = System.currentTimeMillis();
+                logger.info("Book with ID: {} found in cache. \nTime taken to fetch from Redis cache: {} ms", id, endTime - startTime);
+                return book;
+            }
+        } catch (DataAccessException e) {
+            logger.warn("Redis is unavailable. Skipping cache lookup for book with ID: {}", id);
+        }
+
+        logger.info("Book not found in cache or Redis unavailable. Fetching from database...");
+        long dbStartTime = System.currentTimeMillis();
+
+        book = bookdao.getBookById(id);
+
+        long dbEndTime = System.currentTimeMillis();
+        logger.info("Time taken to fetch from database: {} ms", dbEndTime - dbStartTime);
+
+        try {
+            redisTemplate.opsForValue().set("book::" + id, book);
+            logger.info("Book with ID: {} added to cache.", id);
+        } catch (DataAccessException e) {
+            logger.warn("Failed to cache book with ID: {} due to Redis unavailability.", id);
+        }
+
+        return book;
     }
 
     @Override
