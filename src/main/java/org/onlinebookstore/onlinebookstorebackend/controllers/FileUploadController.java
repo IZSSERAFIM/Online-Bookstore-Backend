@@ -14,7 +14,7 @@ public class FileUploadController {
     @Value("${upload.path}")
     private String uploadPath;
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {

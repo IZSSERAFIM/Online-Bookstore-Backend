@@ -22,19 +22,19 @@ public class BookController {
     @Autowired
     BookService bookService;
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/home")
     public ResponseEntity<List<Book>> getAllBooksHandler() {
         return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.ACCEPTED);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/book")
     public ResponseEntity<Book> getBookByIdHandler(Integer id) {
         return new ResponseEntity<>(bookService.getBookById(id), HttpStatus.ACCEPTED);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/books")
     public ResponseEntity<JSONObject> searchBooksHandler(
             @RequestParam(required = false) String keyword,
@@ -53,7 +53,7 @@ public class BookController {
         return new ResponseEntity<>(jsonResponse, HttpStatus.ACCEPTED);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/books/rank")
     public ResponseEntity<JSONObject> getBestSellingBooksHandler() {
         List<Book> books = bookService.getBestSellingBooks();
@@ -64,13 +64,13 @@ public class BookController {
         return new ResponseEntity<>(jsonResponse, HttpStatus.ACCEPTED);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping(value = "/books/add", method = RequestMethod.POST)
     public boolean addBookHandler(@RequestBody BookDTO book) {
         return bookService.addBook(book);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping(value = "/books/update", method = RequestMethod.POST)
     public ResponseEntity<?> updateBookHandler(@RequestBody String payload) {
         // 解析传入的 JSON 字符串为 JSONObject
@@ -88,7 +88,7 @@ public class BookController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping(value = "/books/delete", method = RequestMethod.POST)
     public boolean deleteBookHandler(@RequestBody BookDTO book) {
         return bookService.deleteBook(book.getId());

@@ -27,7 +27,7 @@ public class LoginController {
     @Autowired
     TimerService timerService;
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/login")
     public ResponseEntity<JSONObject> checkAccountHandler(@RequestBody UserDTO user) {
         HttpSession session = SessionUtils.getSession();
@@ -48,7 +48,7 @@ public class LoginController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/logout")
     public @ResponseBody Map<String, Object> logoutHandler(@RequestBody UserDTO user) {
         HttpSession session = SessionUtils.getSession();
@@ -66,7 +66,7 @@ public class LoginController {
         return response;
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> registerHandler(@RequestBody UserDTO userDTO) {
         String result = loginService.register(userDTO);

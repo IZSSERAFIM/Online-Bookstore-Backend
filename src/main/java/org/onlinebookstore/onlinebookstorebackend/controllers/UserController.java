@@ -16,19 +16,19 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/user")
     public ResponseEntity<User> getUserProfileHandler(@RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.getProfile(userDTO), HttpStatus.ACCEPTED);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/admin_user")
     public ResponseEntity<List<User>> getAllUsersHandler() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.ACCEPTED);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping(value ="/ban_user", method = RequestMethod.POST)
     public ResponseEntity<String> banUserHandler(@RequestBody UserDTO userDTO) {
         userService.banUser(userDTO);
@@ -46,7 +46,7 @@ public class UserController {
         return new ResponseEntity<>("User has been unbanned", HttpStatus.ACCEPTED);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping(value = "/update_user", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> updateProfileHandler(@RequestBody UserDTO userDTO) {
         String result = userService.updateProfile(userDTO);

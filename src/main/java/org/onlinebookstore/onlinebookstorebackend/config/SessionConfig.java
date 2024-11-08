@@ -19,13 +19,13 @@ public class SessionConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/register");
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowCredentials(true)
-                .allowedOriginPatterns("*")
-                .allowedMethods("*")
-                .allowedHeaders("*")
-                .exposedHeaders("*");
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowCredentials(true)
+//                .allowedOriginPatterns("http://localhost:3000")
+//                .allowedMethods("*")
+//                .allowedHeaders("*")
+//                .exposedHeaders("*");
+//    }
 }

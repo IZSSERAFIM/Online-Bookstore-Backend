@@ -14,13 +14,13 @@ public class CommentController {
     @Autowired
     CommentService commentsService;
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping("/comment")
     public ResponseEntity<List<Comment>> getCommentsByBookIdHandler(Integer id) {
         return new ResponseEntity<>(commentsService.getCommentsByBookId(id), HttpStatus.ACCEPTED);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @RequestMapping(value = "/comment/post", method = RequestMethod.POST)
     public boolean postComment(@RequestBody CommentDTO comment) {
         return commentsService.postComment(comment);
