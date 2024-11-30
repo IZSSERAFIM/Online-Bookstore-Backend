@@ -8,4 +8,5 @@ public interface BookDao {
     Book getBookById(Integer id);
     void save(Book book);
     void addBook(Book book);
+    List<Book> findBooksByTagRelation(String tagName);
 }

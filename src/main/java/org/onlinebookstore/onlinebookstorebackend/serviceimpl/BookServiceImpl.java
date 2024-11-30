@@ -2,8 +2,10 @@ package org.onlinebookstore.onlinebookstorebackend.serviceimpl;
 
 import org.onlinebookstore.onlinebookstorebackend.dto.BookDTO;
 import org.onlinebookstore.onlinebookstorebackend.repository.BookRepository;
+import org.onlinebookstore.onlinebookstorebackend.repository.BookInfoRepository;
 import org.onlinebookstore.onlinebookstorebackend.service.BookService;
 import org.onlinebookstore.onlinebookstorebackend.entity.Book;
+import org.onlinebookstore.onlinebookstorebackend.entity.BookInfo;
 import org.onlinebookstore.onlinebookstorebackend.dao.BookDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -33,6 +36,9 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private BookInfoRepository bookInfoRepository;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -74,7 +80,7 @@ public class BookServiceImpl implements BookService {
         logger.info("Time taken to fetch from database: {} ms", dbEndTime - dbStartTime);
 
         try {
-            redisTemplate.opsForValue().set("book::" + id, book);
+            redisTemplate.opsForValue().set("book::" + id, book, Duration.ofMinutes(30));
             logger.info("Book with ID: {} added to cache.", id);
         } catch (DataAccessException e) {
             logger.warn("Failed to cache book with ID: {} due to Redis unavailability.", id);
@@ -120,6 +126,17 @@ public class BookServiceImpl implements BookService {
         String newCoverName = "book" + savedBook.getId() + ".jpg";
         savedBook.setCover("http://localhost:8080/images/" + newCoverName); // Update the cover with the correct ID
         bookRepository.save(savedBook); // Save the book again with the updated cover
+        BookInfo savedBookInfo = new BookInfo(
+                savedBook.getId(),
+                savedBook.getTitle(),
+                savedBook.getAuthor(),
+                savedBook.getDescription(),
+                savedBook.getPrice(),
+                savedBook.getCover(),
+                savedBook.getSales(),
+                savedBook.getStock()
+        );
+        bookInfoRepository.save(savedBookInfo); // Save the book info
 
         // Rename the uploaded file
         File oldFile = new File(uploadPath + "temp.jpg");
@@ -131,7 +148,7 @@ public class BookServiceImpl implements BookService {
         }
 
         // Cache the updated book
-        redisTemplate.opsForValue().set("book::" + book.getId(), savedBook);
+        redisTemplate.opsForValue().set("book::" + book.getId(), savedBook, Duration.ofMinutes(30));
 
         return true;
     }
@@ -175,9 +192,20 @@ public class BookServiceImpl implements BookService {
         existingBook.setCover("http://localhost:8080/images/" + coverName);
         // Save the updated book details
         bookRepository.save(existingBook);
+        BookInfo existingBookInfo = new BookInfo(
+                existingBook.getId(),
+                existingBook.getTitle(),
+                existingBook.getAuthor(),
+                existingBook.getDescription(),
+                existingBook.getPrice(),
+                existingBook.getCover(),
+                existingBook.getSales(),
+                existingBook.getStock()
+        );
+        bookInfoRepository.save(existingBookInfo);
 
         // Cache the updated book
-        redisTemplate.opsForValue().set("book::" + book.getId(), existingBook);
+        redisTemplate.opsForValue().set("book::" + book.getId(), existingBook, Duration.ofMinutes(30));
 
         return true;
     }
@@ -190,7 +218,13 @@ public class BookServiceImpl implements BookService {
             return false;
         }
         bookRepository.deleteById(id);
+        bookInfoRepository.deleteById(id);
         System.out.println("Book deleted");
         return true;
+    }
+
+    @Override
+    public List<Book> findBooksByTagRelation(String tagName) {
+        return bookdao.findBooksByTagRelation(tagName);
     }
 }

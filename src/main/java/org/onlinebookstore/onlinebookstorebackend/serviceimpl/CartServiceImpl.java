@@ -14,6 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -38,7 +39,7 @@ public class CartServiceImpl implements CartService {
         // Update the cache with the new list of cart items
         UserDTO userDTO = new UserDTO(cartItemDTO.getName());
         List<CartItem> updatedCartItems = cartdao.getAllCartBooks(userDTO);
-        redisTemplate.opsForValue().set("cart::" + cartItemDTO.getName(), updatedCartItems);
+        redisTemplate.opsForValue().set("cart::" + cartItemDTO.getName(), updatedCartItems, Duration.ofMinutes(30));
 
         return true;
     }
@@ -58,7 +59,7 @@ public class CartServiceImpl implements CartService {
 
                 // Update the cache with the new list of cart items
                 List<CartItem> updatedCartItems = cartdao.getAllCartBooks(new UserDTO(cartItem.getUser().getName()));
-                redisTemplate.opsForValue().set("cart::" + cartItem.getUser().getName(), updatedCartItems);
+                redisTemplate.opsForValue().set("cart::" + cartItem.getUser().getName(), updatedCartItems, Duration.ofMinutes(30));
             }
             return true;
         } catch (Exception e) {

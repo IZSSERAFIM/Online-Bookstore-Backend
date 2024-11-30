@@ -14,4 +14,5 @@ public interface BookService {
     public boolean addBook(BookDTO book);
     public boolean updateBook(BookDTO book);
     public boolean deleteBook(Integer id);
+    public List<Book> findBooksByTagRelation(String tagName);
 }

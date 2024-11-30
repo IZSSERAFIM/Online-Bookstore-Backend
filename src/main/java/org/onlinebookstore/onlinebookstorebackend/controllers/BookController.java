@@ -93,4 +93,12 @@ public class BookController {
     public boolean deleteBookHandler(@RequestBody BookDTO book) {
         return bookService.deleteBook(book.getId());
     }
+
+    @RequestMapping("/books/tag")
+    public ResponseEntity<JSONObject> getBookTagsHandler(String tag) {
+        List<Book> books = bookService.findBooksByTagRelation(tag);
+        JSONObject jsonResponse = new JSONObject();
+        jsonResponse.put("books", books);
+        return new ResponseEntity<>(jsonResponse, HttpStatus.ACCEPTED);
+    }
 }
