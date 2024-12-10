@@ -9,4 +9,5 @@ public interface BookDao {
     void save(Book book);
     void addBook(Book book);
     List<Book> findBooksByTagRelation(String tagName);
+    Book findByTitle(String title);
 }

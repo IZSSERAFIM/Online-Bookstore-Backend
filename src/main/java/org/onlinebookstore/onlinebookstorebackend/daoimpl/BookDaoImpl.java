@@ -99,4 +99,9 @@ public class BookDaoImpl implements BookDao {
         }
         return resultBook;
     }
+
+    @Override
+    public Book findByTitle(String title){
+        return bookRepository.findByTitle(title);
+    }
 }

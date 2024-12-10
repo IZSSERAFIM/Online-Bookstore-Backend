@@ -227,4 +227,9 @@ public class BookServiceImpl implements BookService {
     public List<Book> findBooksByTagRelation(String tagName) {
         return bookdao.findBooksByTagRelation(tagName);
     }
+
+    @Override
+    public Book findByTitle(String title) {
+        return bookdao.findByTitle(title);
+    }
 }
